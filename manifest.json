@@ -1,0 +1,47 @@
+{
+  "name": "Galmee Herregaa",
+  "short_name": "Galmee",
+  "start_url": "./index.html",
+  "id": "./index.html",
+  "scope": "./",
+  "lang": "om",
+  "dir": "ltr",
+  "description": "Galmee herregaa guyyaa guyyaa - Daily income and expense tracker",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#059669",
+  "categories": [
+    "finance",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot-mobile.png",
+      "sizes": "540x960",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Galmee Herregaa Main Screen"
+    }
+  ]
+}

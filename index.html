@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="om">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Galmee Herregaa</title>
+  <meta name="description" content="Galmee herregaa guyyaa guyyaa - Daily income and expense tracker" />
+  <meta name="theme-color" content="#059669" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Galmee Herregaa" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <style>
+    :root {
+      --primary: #059669;
+      --primary-dark: #047857;
+      --primary-light: #d1fae5;
+      --income: #10b981;
+      --income-bg: #ecfdf5;
+      --expense: #ef4444;
+      --expense-bg: #fef2f2;
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --text: #111827;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding-bottom: 90px;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 20px 18px 28px;
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+      box-shadow: 0 6px 20px rgba(5, 150, 105, 0.25);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .app-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .app-subtitle {
+      font-size: 0.78rem;
+      opacity: 0.9;
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.18);
+      border: none;
+      color: white;
+      padding: 8px 11px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.2s;
+    }
+
+    .icon-btn:active {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .balance-card {
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 18px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .balance-label {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      opacity: 0.9;
+    }
+
+    .balance-amount {
+      font-size: 2.1rem;
+      font-weight: 800;
+      margin: 6px 0 14px;
+      word-break: break-word;
+    }
+
+    .summary-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .summary-box {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      padding: 10px 12px;
+      text-align: left;
+    }
+
+    .summary-box .label {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .summary-box.inc .val {
+      color: var(--primary-dark);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-top: 3px;
+    }
+
+    .summary-box.exp .val {
+      color: var(--expense);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-top: 3px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      font-size: 0.95rem;
+      outline: none;
+      box-shadow: var(--shadow);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+    }
+
+    .filter-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      background: #e5e7eb;
+      padding: 4px;
+      border-radius: 12px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 8px 6px;
+      border-radius: 9px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--card);
+      color: var(--text);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .tx-count {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .tx-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tx-item {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow);
+      border-left: 5px solid transparent;
+      transition: transform 0.15s;
+    }
+
+    .tx-item.income {
+      border-left-color: var(--income);
+    }
+
+    .tx-item.expense {
+      border-left-color: var(--expense);
+    }
+
+    .tx-info {
+      flex: 1;
+      padding-right: 10px;
+    }
+
+    .tx-title {
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .tx-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      background: #f3f4f6;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .tx-right {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .tx-amount {
+      font-weight: 800;
+      font-size: 1.02rem;
+    }
+
+    .tx-amount.income {
+      color: var(--primary-dark);
+    }
+
+    .tx-amount.expense {
+      color: var(--expense);
+    }
+
+    .tx-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mini-btn {
+      border: none;
+      background: #f3f4f6;
+      color: var(--text-muted);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .mini-btn.del {
+      color: var(--expense);
+      background: var(--expense-bg);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 42px 20px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 2.6rem;
+      margin-bottom: 10px;
+    }
+
+    .fab {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 15px 22px;
+      font-size: 1rem;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(5, 150, 105, 0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 90;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .fab:active {
+      transform: scale(0.96);
+      background: var(--primary-dark);
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.55);
+      display: none;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--card);
+      width: 100%;
+      max-width: 600px;
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      padding: 22px 20px 28px;
+      animation: slideUp 0.25s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .close-btn {
+      background: #f3f4f6;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .type-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .type-btn {
+      padding: 11px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      background: white;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .type-btn.active.income {
+      border-color: var(--income);
+      background: var(--income-bg);
+      color: var(--primary-dark);
+    }
+
+    .type-btn.active.expense {
+      border-color: var(--expense);
+      background: var(--expense-bg);
+      color: var(--expense);
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: var(--text);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 11px 13px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 85px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1f2937;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+      z-index: 200;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-top">
+      <div>
+        <div class="app-title">Galmee Herregaa</div>
+        <div class="app-subtitle">Galmee Galii fi Baasii Guyyaa Guyyaa</div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" onclick="exportCSV()" title="CSV Buusi">📥 CSV</button>
+        <button class="icon-btn" onclick="clearAllData()" title="Hunda Haqi">🗑️</button>
+      </div>
+    </div>
+
+    <div class="balance-card">
+      <div class="balance-label">Waliigala Herregaa (Haftee)</div>
+      <div class="balance-amount" id="netBalance">0.00 ETB</div>
+      <div class="summary-row">
+        <div class="summary-box inc">
+          <div class="label">⬇️ Waliigala Galii</div>
+          <div class="val" id="totalIncome">0.00 ETB</div>
+        </div>
+        <div class="summary-box exp">
+          <div class="label">⬆️ Waliigala Baasii</div>
+          <div class="val" id="totalExpense">0.00 ETB</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="controls">
+      <input type="text" id="searchInput" class="search-input" placeholder="🔍 Maqaa ykn gosa herregaa barbaadi..." oninput="renderTransactions()" />
+      <div class="filter-tabs">
+        <button class="tab-btn active" data-filter="all" onclick="setFilter('all', this)">Hunda</button>
+        <button class="tab-btn" data-filter="income" onclick="setFilter('income', this)">Galii Qofa</button>
+        <button class="tab-btn" data-filter="expense" onclick="setFilter('expense', this)">Baasii Qofa</button>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-title">Tarree Galmeewwanii</div>
+      <div class="tx-count" id="txCount">0 galmee</div>
+    </div>
+
+    <div class="tx-list" id="txList"></div>
+  </div>
+
+  <button class="fab" onclick="openModal()">
+    <span>＋</span> Galmee Haaraa
+  </button>
+
+  <!-- Add / Edit Modal -->
+  <div class="modal-backdrop" id="txModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Galmee Herregaa Qabadhu</div>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+
+      <form id="txForm" onsubmit="saveTransaction(event)">
+        <input type="hidden" id="editId" />
+
+        <div class="type-toggle">
+          <button type="button" class="type-btn active income" id="btnIncome" onclick="setType('income')">⬇️ Galii (Income)</button>
+          <button type="button" class="type-btn expense" id="btnExpense" onclick="setType('expense')">⬆️ Baasii (Expense)</button>
+        </div>
+
+        <div class="form-group">
+          <label for="txTitle">Sababa / Maqaa Galmee</label>
+          <input type="text" id="txTitle" class="form-control" placeholder="Fkn: Mindaa, Gurgurtaa, Nyaata, Kiraa..." required />
+        </div>
+
+        <div class="form-group">
+          <label for="txAmount">Hanga Maallaqaa (ETB)</label>
+          <input type="number" id="txAmount" class="form-control" step="0.01" min="0.01" placeholder="0.00" required />
+        </div>
+
+        <div class="form-group">
+          <label for="txCategory">Gosa (Category)</label>
+          <select id="txCategory" class="form-control">
+            <option value="Hojii fi Daldala">Hojii fi Daldala</option>
+            <option value="Mindaa">Mindaa</option>
+            <option value="Nyaata fi Dhugaatii">Nyaata fi Dhugaatii</option>
+            <option value="Geejjiba">Geejjiba</option>
+            <option value="Kiraa fi Tajaajila">Kiraa fi Tajaajila</option>
+            <option value="Fayyaa fi Barnoota">Fayyaa fi Barnoota</option>
+            <option value="Kan Biraa">Kan Biraa</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="txDate">Guyyaa</label>
+          <input type="date" id="txDate" class="form-control" required />
+        </div>
+
+        <button type="submit" class="submit-btn">Galmeessi (Save)</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = 'galmee_herregaa_records_v1';
+    let transactions = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    let currentFilter = 'all';
+    let selectedType = 'income';
+
+    // Register Service Worker for offline PWA support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    function formatMoney(num) {
+      return Number(num).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + ' ETB';
+    }
+
+    function setFilter(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTransactions();
+    }
+
+    function setType(type) {
+      selectedType = type;
+      document.getElementById('btnIncome').classList.toggle('active', type === 'income');
+      document.getElementById('btnExpense').classList.toggle('active', type === 'expense');
+    }
+
+    function openModal(tx = null) {
+      const modal = document.getElementById('txModal');
+      const form = document.getElementById('txForm');
+      form.reset();
+
+      if (tx) {
+        document.getElementById('modalTitle').textContent = 'Galmee Sirreessi';
+        document.getElementById('editId').value = tx.id;
+        document.getElementById('txTitle').value = tx.title;
+        document.getElementById('txAmount').value = tx.amount;
+        document.getElementById('txCategory').value = tx.category;
+        document.getElementById('txDate').value = tx.date;
+        setType(tx.type);
+      } else {
+        document.getElementById('modalTitle').textContent = 'Galmee Herregaa Qabadhu';
+        document.getElementById('editId').value = '';
+        document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
+        setType('income');
+      }
+
+      modal.classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('txModal').classList.remove('open');
+    }
+
+    function saveTransaction(e) {
+      e.preventDefault();
+      const id = document.getElementById('editId').value;
+      const title = document.getElementById('txTitle').value.trim();
+      const amount = parseFloat(document.getElementById('txAmount').value);
+      const category = document.getElementById('txCategory').value;
+      const date = document.getElementById('txDate').value;
+
+      if (!title || isNaN(amount) || amount <= 0) return;
+
+      if (id) {
+        const idx = transactions.findIndex(t => t.id === id);
+        if (idx !== -1) {
+          transactions[idx] = { id, type: selectedType, title, amount, category, date };
+          showToast('Galmeen sirreeffameera!');
+        }
+      } else {
+        const newTx = {
+          id: Date.now().toString(),
+          type: selectedType,
+          title,
+          amount,
+          category,
+          date
+        };
+        transactions.unshift(newTx);
+        showToast('Galmeen haaraan dabalamera!');
+      }
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+      closeModal();
+      renderTransactions();
+    }
+
+    function deleteTransaction(id) {
+      transactions = transactions.filter(t => t.id !== id);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+      renderTransactions();
+      showToast('Galmeen haqameera.');
+    }
+
+    function editTransaction(id) {
+      const tx = transactions.find(t => t.id === id);
+      if (tx) openModal(tx);
+    }
+
+    function clearAllData() {
+      if (transactions.length === 0) {
+        showToast('Galmeen haqamu hin jiru.');
+        return;
+      }
+      if (confirm('Galmeewwan hunda haquu barbaadduu?')) {
+        transactions = [];
+        localStorage.removeItem(STORAGE_KEY);
+        renderTransactions();
+        showToast('Galmeen hundi haqameera.');
+      }
+    }
+
+    function exportCSV() {
+      if (transactions.length === 0) {
+        showToast('Galmeen buufamu hin jiru.');
+        return;
+      }
+      let csv = 'Guyyaa,Gosa Herregaa,Sababa,Ramaddii,Maallaqa (ETB)\n';
+      transactions.forEach(t => {
+        const typeLabel = t.type === 'income' ? 'Galii' : 'Baasii';
+        const safeTitle = '"' + t.title.replace(/"/g, '""') + '"';
+        csv += `${t.date},${typeLabel},${safeTitle},"${t.category}",${t.amount}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `galmee_herregaa_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Faayiliin CSV buufameera!');
+    }
+
+    function renderTransactions() {
+      const search = document.getElementById('searchInput').value.toLowerCase().trim();
+
+      let totalIncome = 0;
+      let totalExpense = 0;
+
+      transactions.forEach(t => {
+        if (t.type === 'income') totalIncome += t.amount;
+        else totalExpense += t.amount;
+      });
+
+      const net = totalIncome - totalExpense;
+
+      document.getElementById('netBalance').textContent = formatMoney(net);
+      document.getElementById('totalIncome').textContent = formatMoney(totalIncome);
+      document.getElementById('totalExpense').textContent = formatMoney(totalExpense);
+
+      const filtered = transactions.filter(t => {
+        const matchesFilter = currentFilter === 'all' || t.type === currentFilter;
+        const matchesSearch =
+          t.title.toLowerCase().includes(search) ||
+          t.category.toLowerCase().includes(search) ||
+          t.date.includes(search);
+        return matchesFilter && matchesSearch;
+      });
+
+      document.getElementById('txCount').textContent = `${filtered.length} galmee`;
+      const listEl = document.getElementById('txList');
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📒</div>
+            <div style="font-weight:700; color:#374151; margin-bottom:4px;">Galmeen Herregaa Hin Jiru</div>
+            <div style="font-size:0.85rem;">Galii ykn baasii kee galmeessuuf <b>"+ Galmee Haaraa"</b> tuqi.</div>
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(t => {
+        const isInc = t.type === 'income';
+        const sign = isInc ? '+' : '-';
+        return `
+          <div class="tx-item ${t.type}">
+            <div class="tx-info">
+              <div class="tx-title">${escapeHTML(t.title)}</div>
+              <div class="tx-meta">
+                <span class="badge">${escapeHTML(t.category)}</span>
+                <span>📅 ${t.date}</span>
+              </div>
+            </div>
+            <div class="tx-right">
+              <div class="tx-amount ${t.type}">${sign}${formatMoney(t.amount)}</div>
+              <div class="tx-actions">
+                <button class="mini-btn" onclick="editTransaction('${t.id}')">✏️ Gulaali</button>
+                <button class="mini-btn del" onclick="deleteTransaction('${t.id}')">🗑️</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[m]));
+    }
+
+    // Close modal when tapping backdrop
+    document.getElementById('txModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    // Initial render
+    renderTransactions();
+  </script>
+</body>
+</html>
