@@ -35,6 +35,14 @@
             padding-bottom: 40px;
         }
 
+        .auth-container, .app-container {
+            display: none;
+        }
+
+        .auth-container.active, .app-container.active {
+            display: block;
+        }
+
         header {
             text-align: center;
             margin-bottom: 20px;
@@ -155,6 +163,13 @@
             background-color: var(--primary-hover);
         }
 
+        .secondary-btn {
+            background-color: #6b7280;
+        }
+        .secondary-btn:hover {
+            background-color: #4b5563;
+        }
+
         .filters {
             display: flex;
             gap: 8px;
@@ -223,65 +238,218 @@
             padding: 20px 0;
             font-size: 0.9rem;
         }
+
+        .user-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #e0e7ff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+            color: #312e81;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--danger);
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .otp-alert {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Galmee Herregaa / የገቢና ወጪ መመዝገቢያ</h1>
-        <p>Daily Income & Expense Tracker</p>
-    </header>
+    <!-- AUTHENTICATION SECTION -->
+    <div id="authScreen" class="auth-container active">
+        <header>
+            <h1>Galmee Herregaa</h1>
+            <p>Email Login & OTP Confirmation / የኢሜይል መግቢያ እና ማረጋገጫ</p>
+        </header>
 
-    <div class="total-box">
-        <h3>ቀሪ ሂሳብ / Net Balance (Haftee)</h3>
-        <div class="amount" id="netBalance">0.00 ETB</div>
+        <!-- Step 1: Enter Details & Email -->
+        <div class="card" id="stepDetails">
+            <h2 style="font-size: 1.1rem; margin-bottom: 12px;">የተጠቃሚ መረጃ / User Details</h2>
+            <form id="detailsForm">
+                <div class="form-group">
+                    <label for="userName">ስም / Full Name</label>
+                    <input type="text" id="userName" required placeholder="የእርስዎን ስም ያስገቡ...">
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">ኢሜይል አድራሻ / Email Address</label>
+                    <input type="email" id="userEmail" required placeholder="example@gmail.com">
+                </div>
+                <button type="submit">OTP ላክ / Send OTP</button>
+            </form>
+        </div>
+
+        <!-- Step 2: Enter OTP Code -->
+        <div class="card" id="stepOtp" style="display: none;">
+            <h2 style="font-size: 1.1rem; margin-bottom: 12px;">OTP ማረጋገጫ / Confirm OTP</h2>
+            <div id="otpNotice" class="otp-alert"></div>
+            <form id="otpForm">
+                <div class="form-group">
+                    <label for="otpInput">የተላከውን ቁጥር (OTP) ያስገቡ / Enter 4-digit OTP</label>
+                    <input type="text" id="otpInput" maxlength="4" required placeholder="1234">
+                </div>
+                <button type="submit">ግባ / Verify & Login</button>
+                <button type="button" class="secondary-btn" id="backToDetails" style="margin-top: 6px;">Back / ተመለስ</button>
+            </form>
+        </div>
     </div>
 
-    <div class="balance-grid">
-        <div class="balance-box">
-            <h3>አጠቃላይ ገቢ / Total Income</h3>
-            <div class="amount income-val" id="totalIncome">0.00 ETB</div>
-        </div>
-        <div class="balance-box">
-            <h3>አጠቃላይ ወጪ / Total Expense</h3>
-            <div class="amount expense-val" id="totalExpense">0.00 ETB</div>
-        </div>
-    </div>
+    <!-- MAIN APP SECTION -->
+    <div id="appScreen" class="app-container">
+        <header>
+            <h1>Galmee Herregaa / የገቢና ወጪ መመዝገቢያ</h1>
+            <div class="user-banner">
+                <span id="displayUserEmail">user@email.com</span>
+                <button class="logout-btn" id="logoutBtn">ውጣ / Logout</button>
+            </div>
+        </header>
 
-    <div class="card">
-        <h2 style="font-size: 1.1rem; margin-bottom: 12px;">አዲስ መዝግብ / Add Transaction</h2>
-        <form id="txForm">
-            <div class="form-group">
-                <label for="desc">መግለጫ / Description (Fkn: ንግድ, Nyaata...)</label>
-                <input type="text" id="desc" required placeholder="የግብይቱን መግለጫ ያስገቡ...">
-            </div>
-            <div class="form-group">
-                <label for="amount">መጠን በብር / Amount (ETB)</label>
-                <input type="number" id="amount" step="any" required placeholder="0.00">
-            </div>
-            <div class="form-group">
-                <label for="type">አይነት / Type</label>
-                <select id="type">
-                    <option value="income">ገቢ (Income / Galii)</option>
-                    <option value="expense">ወጪ (Expense / Baasii)</option>
-                </select>
-            </div>
-            <button type="submit">መዝግብ / Save</button>
-        </form>
-    </div>
-
-    <div class="card">
-        <h2 style="font-size: 1.1rem; margin-bottom: 12px;">የግብይቶች ታሪክ / Transaction History</h2>
-        <div class="filters">
-            <input type="text" id="searchInput" placeholder="ፈልግ / Search...">
+        <div class="total-box">
+            <h3>ቀሪ ሂሳብ / Net Balance (Haftee)</h3>
+            <div class="amount" id="netBalance">0.00 ETB</div>
         </div>
-        <ul class="transaction-list" id="txList">
-            <!-- Transactions injected dynamically -->
-        </ul>
+
+        <div class="balance-grid">
+            <div class="balance-box">
+                <h3>አጠቃላይ ገቢ / Total Income</h3>
+                <div class="amount income-val" id="totalIncome">0.00 ETB</div>
+            </div>
+            <div class="balance-box">
+                <h3>አጠቃላይ ወጪ / Total Expense</h3>
+                <div class="amount expense-val" id="totalExpense">0.00 ETB</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 style="font-size: 1.1rem; margin-bottom: 12px;">አዲስ መዝግብ / Add Transaction</h2>
+            <form id="txForm">
+                <div class="form-group">
+                    <label for="desc">መግለጫ / Description (Fkn: ንግድ, Nyaata...)</label>
+                    <input type="text" id="desc" required placeholder="የግብይቱን መግለጫ ያስገቡ...">
+                </div>
+                <div class="form-group">
+                    <label for="amount">መጠን በብር / Amount (ETB)</label>
+                    <input type="number" id="amount" step="any" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="type">አይነት / Type</label>
+                    <select id="type">
+                        <option value="income">ገቢ (Income / Galii)</option>
+                        <option value="expense">ወጪ (Expense / Baasii)</option>
+                    </select>
+                </div>
+                <button type="submit">መዝግብ / Save</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2 style="font-size: 1.1rem; margin-bottom: 12px;">የግብይቶች ታሪክ / Transaction History</h2>
+            <div class="filters">
+                <input type="text" id="searchInput" placeholder="ፈልግ / Search...">
+            </div>
+            <ul class="transaction-list" id="txList">
+                <!-- Transactions injected dynamically -->
+            </ul>
+        </div>
     </div>
 
     <script>
-        // Load stored transactions from browser localStorage or start empty
+        // DOM Elements
+        const authScreen = document.getElementById('authScreen');
+        const appScreen = document.getElementById('appScreen');
+        const stepDetails = document.getElementById('stepDetails');
+        const stepOtp = document.getElementById('stepOtp');
+        const detailsForm = document.getElementById('detailsForm');
+        const otpForm = document.getElementById('otpForm');
+        const userNameInput = document.getElementById('userName');
+        const userEmailInput = document.getElementById('userEmail');
+        const otpInput = document.getElementById('otpInput');
+        const otpNotice = document.getElementById('otpNotice');
+        const backToDetails = document.getElementById('backToDetails');
+        const displayUserEmail = document.getElementById('displayUserEmail');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        let generatedOtp = '';
+        let pendingEmail = '';
+        let pendingName = '';
+
+        // Check if user is already logged in
+        const currentUser = localStorage.getItem('galmee_logged_user');
+        if (currentUser) {
+            showApp(currentUser);
+        }
+
+        // Step 1: Send OTP simulation
+        detailsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            pendingName = userNameInput.value.trim();
+            pendingEmail = userEmailInput.value.trim();
+            
+            // Generate random 4-digit OTP
+            generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+            
+            otpNotice.textContent = `ለ ${pendingEmail} የተላከው OTP ቁጥር: [ ${generatedOtp} ] (ይህን ቁጥር ከታች ያስገቡ)`;
+            stepDetails.style.display = 'none';
+            stepOtp.style.display = 'block';
+        });
+
+        backToDetails.addEventListener('click', () => {
+            stepOtp.style.display = 'none';
+            stepDetails.style.display = 'block';
+            otpInput.value = '';
+        });
+
+        // Step 2: Verify OTP
+        otpForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const enteredOtp = otpInput.value.trim();
+
+            if (enteredOtp === generatedOtp) {
+                localStorage.setItem('galmee_logged_user', pendingEmail);
+                localStorage.setItem('galmee_user_name', pendingName);
+                showApp(pendingEmail);
+            } else {
+                alert('የገባው OTP ትክክል አይደለም! እባክዎ እንደገና ይሞክሩ። (Incorrect OTP)');
+            }
+        });
+
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('galmee_logged_user');
+            authScreen.classList.add('active');
+            appScreen.classList.remove('active');
+            stepOtp.style.display = 'none';
+            stepDetails.style.display = 'block';
+            detailsForm.reset();
+            otpInput.value = '';
+        });
+
+        function showApp(email) {
+            authScreen.classList.remove('active');
+            appScreen.classList.add('active');
+            displayUserEmail.textContent = email;
+            renderTransactions();
+        }
+
+        // Main App Logic & Persistence
         let transactions = JSON.parse(localStorage.getItem('galmee_transactions')) || [];
 
         const txForm = document.getElementById('txForm');
@@ -309,7 +477,7 @@
                 date: new Date().toLocaleDateString()
             };
 
-            transactions.unshift(newTx); // Add to top of list
+            transactions.unshift(newTx);
             saveAndRender();
             txForm.reset();
         });
@@ -386,9 +554,6 @@
                     .catch(err => console.log('Service Worker registration failed:', err));
             });
         }
-
-        // Initial render on load
-        renderTransactions();
     </script>
 </body>
 </html>
