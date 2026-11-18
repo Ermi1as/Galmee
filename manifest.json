@@ -1,8 +1,8 @@
 {
-  "id": "galmee-herregaa-app-v1",
+  "id": "./index.html",
   "name": "Galmee Herregaa - Financial Tracker",
   "short_name": "Galmee",
-  "description": "Daily income and expense tracking bookkeeping app with email login, OTP confirmation, and bilingual support.",
+  "description": "Bilingual daily income and expense tracking bookkeeping app with persistent offline storage and OTP verification.",
   "start_url": "./index.html",
   "scope": "./",
   "lang": "am",
@@ -13,39 +13,34 @@
     "minimal-ui"
   ],
   "orientation": "portrait",
-  "background_color": "#f3f4f6",
+  "background_color": "#f8fafc",
   "theme_color": "#4f46e5",
   "categories": [
     "finance",
-    "productivity",
-    "utilities"
+    "business",
+    "productivity"
   ],
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "screenshots": [
     {
-      "src": "screenshot-mobile.png",
+      "src": "./screenshot-mobile.png",
       "sizes": "540x720",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Galmee Herregaa Mobile Dashboard"
-    },
-    {
-      "src": "screenshot-wide.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Galmee Herregaa Desktop Dashboard"
+      "label": "Galmee Herregaa Mobile Financial Dashboard"
     }
   ],
   "prefer_related_applications": false,
@@ -58,20 +53,20 @@
       "url": "./index.html#txForm",
       "icons": [
         {
-          "src": "icon-192.png",
+          "src": "./icon-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
       ]
     },
     {
-      "name": "Search Transactions",
+      "name": "Search History",
       "short_name": "Search",
-      "description": "Search your transaction history",
+      "description": "Search transaction records",
       "url": "./index.html#searchInput",
       "icons": [
         {
-          "src": "icon-192.png",
+          "src": "./icon-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }

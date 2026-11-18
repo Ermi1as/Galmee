@@ -2,69 +2,192 @@
 <html lang="am">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galmee Herregaa - Financial Tracker</title>
-    <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Galmee Herregaa — የገቢና ወጪ መመዝገቢያ</title>
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" href="./icon-192.png">
+    <link rel="apple-touch-icon" href="./icon-192.png">
     <meta name="theme-color" content="#4f46e5">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         :root {
             --primary: #4f46e5;
-            --primary-hover: #4338ca;
+            --primary-dark: #3730a3;
+            --primary-light: #eef2ff;
             --success: #16a34a;
+            --success-bg: #dcfce7;
             --danger: #dc2626;
-            --bg: #f3f4f6;
+            --danger-bg: #fee2e2;
+            --bg: #f8fafc;
             --card-bg: #ffffff;
-            --text: #1f2937;
-            --text-light: #6b7280;
-            --border: #e5e7eb;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Ethiopic", Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: var(--bg);
             color: var(--text);
-            padding: 16px;
-            max-width: 600px;
+            max-width: 560px;
             margin: 0 auto;
-            padding-bottom: 40px;
+            padding: 16px 16px 48px;
+            overscroll-behavior-y: contain;
+            user-select: none;
+        }
+
+        input, select {
+            user-select: text;
         }
 
         .auth-container, .app-container {
             display: none;
+            animation: fadeIn 0.25s ease-out;
         }
 
         .auth-container.active, .app-container.active {
             display: block;
         }
 
-        header {
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .brand-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
-            margin-bottom: 20px;
+            margin: 10px 0 20px;
         }
 
-        header h1 {
+        .app-logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(79, 70, 229, 0.2);
+            margin-bottom: 10px;
+            object-fit: cover;
+        }
+
+        .brand-header h1 {
             color: var(--primary);
-            font-size: 1.5rem;
-            margin-bottom: 4px;
+            font-size: 1.45rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
         }
 
-        header p {
-            color: var(--text-light);
-            font-size: 0.9rem;
+        .brand-header p {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin-top: 2px;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            padding: 10px 14px;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+
+        .top-bar-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+        }
+
+        .top-bar-info img {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .user-details {
+            overflow: hidden;
+        }
+
+        .user-name {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-email {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .logout-btn {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border: none;
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            flex-shrink: 0;
         }
 
         .card {
             background: var(--card-bg);
-            padding: 16px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 18px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
             margin-bottom: 16px;
+        }
+
+        .card h2 {
+            font-size: 1.02rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            color: var(--text);
+        }
+
+        .total-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #ffffff;
+            padding: 18px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 12px;
+            box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.35);
+        }
+
+        .total-box h3 {
+            font-size: 0.82rem;
+            opacity: 0.92;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .total-box .amount {
+            font-size: 1.7rem;
+            font-weight: 800;
         }
 
         .balance-grid {
@@ -77,44 +200,26 @@
         .balance-box {
             background: var(--card-bg);
             padding: 14px;
-            border-radius: 10px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
             text-align: center;
         }
 
         .balance-box h3 {
-            font-size: 0.8rem;
-            color: var(--text-light);
-            margin-bottom: 6px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            font-weight: 600;
         }
 
         .balance-box .amount {
-            font-size: 1.1rem;
-            font-weight: bold;
+            font-size: 1.05rem;
+            font-weight: 800;
         }
 
         .income-val { color: var(--success); }
         .expense-val { color: var(--danger); }
-
-        .total-box {
-            background: var(--primary);
-            color: white;
-            padding: 14px;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 16px;
-        }
-
-        .total-box h3 {
-            font-size: 0.85rem;
-            opacity: 0.9;
-            margin-bottom: 4px;
-        }
-
-        .total-box .amount {
-            font-size: 1.4rem;
-            font-weight: bold;
-        }
 
         form {
             display: flex;
@@ -125,64 +230,127 @@
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 5px;
         }
 
         label {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-light);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-muted);
         }
 
         input, select {
-            padding: 10px 12px;
+            width: 100%;
+            padding: 11px 12px;
             border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background-color: #f8fafc;
+            color: var(--text);
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         input:focus, select:focus {
             border-color: var(--primary);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
         }
 
-        button {
+        .btn-primary {
             background-color: var(--primary);
-            color: white;
+            color: #ffffff;
             border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: 13px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: var(--text);
+            border: none;
+            padding: 11px;
+            border-radius: 10px;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s;
         }
 
-        button:hover {
-            background-color: var(--primary-hover);
+        .otp-alert {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-align: center;
+            line-height: 1.4;
         }
 
-        .secondary-btn {
-            background-color: #6b7280;
+        .otp-code-highlight {
+            display: inline-block;
+            background: #ffffff;
+            border: 1px dashed #d97706;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            margin-top: 4px;
+            color: #78350f;
         }
-        .secondary-btn:hover {
-            background-color: #4b5563;
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .filter-tab {
+            flex: 1;
+            padding: 8px 6px;
+            border: 1px solid var(--border);
+            background: #f8fafc;
+            color: var(--text-muted);
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
         }
 
         .filters {
-            display: flex;
-            gap: 8px;
             margin-bottom: 12px;
-        }
-
-        .filters input {
-            flex: 1;
         }
 
         .transaction-list {
             list-style: none;
-            max-height: 300px;
+            max-height: 340px;
             overflow-y: auto;
         }
 
@@ -190,7 +358,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 12px;
+            padding: 12px 4px;
             border-bottom: 1px solid var(--border);
         }
 
@@ -199,104 +367,94 @@
         }
 
         .tx-info h4 {
-            font-size: 0.95rem;
-            margin-bottom: 2px;
+            font-size: 0.94rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: var(--text);
         }
 
         .tx-info span {
             font-size: 0.75rem;
-            color: var(--text-light);
+            color: var(--text-muted);
         }
 
         .tx-right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .tx-amount {
-            font-weight: bold;
-            font-size: 0.95rem;
+            font-weight: 700;
+            font-size: 0.92rem;
         }
 
         .delete-btn {
-            background: none;
+            background: #f1f5f9;
             border: none;
-            color: var(--text-light);
+            color: var(--text-muted);
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 1.1rem;
-            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .delete-btn:hover {
+            background: var(--danger-bg);
             color: var(--danger);
         }
 
         .empty-state {
             text-align: center;
-            color: var(--text-light);
-            padding: 20px 0;
-            font-size: 0.9rem;
+            color: var(--text-muted);
+            padding: 26px 0;
+            font-size: 0.88rem;
         }
 
-        .user-banner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #e0e7ff;
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #0f172a;
+            color: #ffffff;
+            padding: 10px 18px;
+            border-radius: 10px;
             font-size: 0.85rem;
-            color: #312e81;
-        }
-
-        .logout-btn {
-            background: none;
-            border: none;
-            color: var(--danger);
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
-        .otp-alert {
-            background: #fef3c7;
-            border: 1px solid #f59e0b;
-            color: #92400e;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            margin-bottom: 10px;
+            font-weight: 500;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: all 0.25s ease;
+            z-index: 1000;
+            max-width: 90%;
             text-align: center;
         }
 
-        .toggle-link {
-            text-align: center;
-            margin-top: 12px;
-            font-size: 0.85rem;
-            color: var(--primary);
-            cursor: pointer;
-            text-decoration: underline;
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
         }
     </style>
 </head>
 <body>
 
-    <!-- AUTHENTICATION SECTION -->
     <div id="authScreen" class="auth-container active">
-        <header>
+        <header class="brand-header">
+            <img src="./icon-192.png" alt="Galmee Herregaa" class="app-logo" onerror="this.style.display='none'">
             <h1>Galmee Herregaa</h1>
-            <p>Login & Email OTP Verification / መግቢያ እና ማረጋገጫ</p>
+            <p>የገቢና ወጪ መመዝገቢያ / Financial Tracker</p>
         </header>
 
-        <!-- Step 1: Login / Signup Form -->
         <div class="card" id="stepAuth">
-            <h2 id="authTitle" style="font-size: 1.1rem; margin-bottom: 12px;">ግባ / Login</h2>
+            <h2 id="authTitle">ግባ / Login</h2>
             <form id="authForm">
                 <div class="form-group" id="nameGroup" style="display: none;">
-                    <label for="userName">ስም / Full Name</label>
-                    <input type="text" id="userName" placeholder="የእርስዎን ስም ያስገቡ...">
+                    <label for="userName">ሙሉ ስም / Full Name</label>
+                    <input type="text" id="userName" placeholder="የእርስዎን ሙሉ ስም ያስገቡ...">
                 </div>
                 <div class="form-group">
                     <label for="userEmail">ኢሜይል አድራሻ / Email Address</label>
@@ -304,37 +462,38 @@
                 </div>
                 <div class="form-group">
                     <label for="userPass">የሚስጥር ቁጥር / Password</label>
-                    <input type="password" id="userPass" required placeholder="••••••••">
+                    <input type="password" id="userPass" required minlength="4" placeholder="••••••••">
                 </div>
-                <button type="submit" id="authSubmitBtn">ግባ / Login</button>
+                <button type="submit" class="btn-primary" id="authSubmitBtn">ግባ / Login</button>
             </form>
-            <div class="toggle-link" id="toggleAuthMode">መለያ የለዎትም? ይመዝገቡ (Sign Up)</div>
+            <div class="toggle-link" id="toggleAuthMode">መለያ የለዎትም? ይመዝገቡ / Sign Up</div>
         </div>
 
-        <!-- Step 2: Enter OTP Code -->
         <div class="card" id="stepOtp" style="display: none;">
-            <h2 style="font-size: 1.1rem; margin-bottom: 12px;">OTP ማረጋገጫ / Confirm Email OTP</h2>
+            <h2>OTP ማረጋገጫ / Email Verification</h2>
             <div id="otpNotice" class="otp-alert"></div>
             <form id="otpForm">
                 <div class="form-group">
-                    <label for="otpInput">የተላከውን ቁጥር (OTP) ያስገቡ / Enter 4-digit OTP</label>
-                    <input type="text" id="otpInput" maxlength="4" required placeholder="1234">
+                    <label for="otpInput">ባለ 4-አሃዝ OTP ቁጥር ያስገቡ / Enter 4-digit OTP</label>
+                    <input type="text" id="otpInput" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" required placeholder="1234" style="text-align: center; letter-spacing: 8px; font-size: 1.2rem; font-weight: 700;">
                 </div>
-                <button type="submit">አረጋግጥ እና ግባ / Verify & Login</button>
-                <button type="button" class="secondary-btn" id="backToAuth" style="margin-top: 6px;">Back / ተመለስ</button>
+                <button type="submit" class="btn-primary">አረጋግጥ እና ግባ / Verify & Login</button>
+                <button type="button" class="btn-secondary" id="backToAuth">ተመለስ / Back</button>
             </form>
         </div>
     </div>
 
-    <!-- MAIN APP SECTION -->
     <div id="appScreen" class="app-container">
-        <header>
-            <h1>Galmee Herregaa / የገቢና ወጪ መመዝገቢያ</h1>
-            <div class="user-banner">
-                <span id="displayUserEmail">user@email.com</span>
-                <button class="logout-btn" id="logoutBtn">ውጣ / Logout</button>
+        <div class="top-bar">
+            <div class="top-bar-info">
+                <img src="./icon-192.png" alt="Logo" onerror="this.style.display='none'">
+                <div class="user-details">
+                    <div class="user-name" id="displayUserName">Galmee Herregaa</div>
+                    <div class="user-email" id="displayUserEmail">user@example.com</div>
+                </div>
             </div>
-        </header>
+            <button class="logout-btn" id="logoutBtn">ውጣ / Logout</button>
+        </div>
 
         <div class="total-box">
             <h3>ቀሪ ሂሳብ / Net Balance (Haftee)</h3>
@@ -343,17 +502,17 @@
 
         <div class="balance-grid">
             <div class="balance-box">
-                <h3>አጠቃላይ ገቢ / Total Income</h3>
+                <h3>አጠቃላይ ገቢ / Income (Galii)</h3>
                 <div class="amount income-val" id="totalIncome">0.00 ETB</div>
             </div>
             <div class="balance-box">
-                <h3>አጠቃላይ ወጪ / Total Expense</h3>
+                <h3>አጠቃላይ ወጪ / Expense (Baasii)</h3>
                 <div class="amount expense-val" id="totalExpense">0.00 ETB</div>
             </div>
         </div>
 
         <div class="card">
-            <h2 style="font-size: 1.1rem; margin-bottom: 12px;">አዲስ መዝግብ / Add Transaction</h2>
+            <h2>አዲስ መዝግብ / Add Transaction</h2>
             <form id="txForm">
                 <div class="form-group">
                     <label for="desc">መግለጫ / Description (Fkn: ንግድ, Nyaata...)</label>
@@ -361,7 +520,7 @@
                 </div>
                 <div class="form-group">
                     <label for="amount">መጠን በብር / Amount (ETB)</label>
-                    <input type="number" id="amount" step="any" required placeholder="0.00">
+                    <input type="number" id="amount" step="0.01" min="0.01" required placeholder="0.00">
                 </div>
                 <div class="form-group">
                     <label for="type">አይነት / Type</label>
@@ -370,23 +529,31 @@
                         <option value="expense">ወጪ (Expense / Baasii)</option>
                     </select>
                 </div>
-                <button type="submit">መዝግብ / Save</button>
+                <button type="submit" class="btn-primary">መዝግብ / Save</button>
             </form>
         </div>
 
         <div class="card">
-            <h2 style="font-size: 1.1rem; margin-bottom: 12px;">የግብይቶች ታሪክ / Transaction History</h2>
-            <div class="filters">
-                <input type="text" id="searchInput" placeholder="ፈልግ / Search...">
+            <h2>የግብይቶች ታሪክ / Transaction History</h2>
+            <div class="filter-tabs">
+                <button type="button" class="filter-tab active" data-filter="all">ሁሉም / All</button>
+                <button type="button" class="filter-tab" data-filter="income">ገቢ / Galii</button>
+                <button type="button" class="filter-tab" data-filter="expense">ወጪ / Baasii</button>
             </div>
-            <ul class="transaction-list" id="txList">
-                <!-- Transactions injected dynamically -->
-            </ul>
+            <div class="filters">
+                <input type="text" id="searchInput" placeholder="ፈልግ / Search transactions...">
+            </div>
+            <ul class="transaction-list" id="txList"></ul>
         </div>
     </div>
 
+    <div id="toast" class="toast"></div>
+
     <script>
-        // DOM Elements
+        const USERS_KEY = 'galmee_users_v1';
+        const SESSION_KEY = 'galmee_active_session_v1';
+        const TX_STORAGE_PREFIX = 'galmee_transactions_';
+
         const authScreen = document.getElementById('authScreen');
         const appScreen = document.getElementById('appScreen');
         const stepAuth = document.getElementById('stepAuth');
@@ -403,106 +570,9 @@
         const otpInput = document.getElementById('otpInput');
         const otpNotice = document.getElementById('otpNotice');
         const backToAuth = document.getElementById('backToAuth');
+        const displayUserName = document.getElementById('displayUserName');
         const displayUserEmail = document.getElementById('displayUserEmail');
         const logoutBtn = document.getElementById('logoutBtn');
-
-        let isSignup = false;
-        let generatedOtp = '';
-        let pendingEmail = '';
-
-        // Check if user is already logged in
-        const currentUser = localStorage.getItem('galmee_logged_user');
-        if (currentUser) {
-            showApp(currentUser);
-        }
-
-        // Toggle between Login and Signup mode
-        toggleAuthMode.addEventListener('click', () => {
-            isSignup = !isSignup;
-            if (isSignup) {
-                authTitle.textContent = 'መመዝገቢያ / Sign Up';
-                authSubmitBtn.textContent = 'መዝግብ እና OTP ላክ / Register & Send OTP';
-                nameGroup.style.display = 'flex';
-                userNameInput.required = true;
-                toggleAuthMode.textContent = 'አካውንት አለዎት? ግባ (Login)';
-            } else {
-                authTitle.textContent = 'ግባ / Login';
-                authSubmitBtn.textContent = 'ግባ / Login';
-                nameGroup.style.display = 'none';
-                userNameInput.required = false;
-                toggleAuthMode.textContent = 'መለያ የለዎትም? ይመዝገቡ (Sign Up)';
-            }
-        });
-
-        // Handle Auth Submit (Login or Signup with OTP confirmation)
-        authForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = userEmailInput.value.trim();
-            const pass = userPassInput.value.trim();
-
-            if (isSignup) {
-                let users = JSON.parse(localStorage.getItem('galmee_users')) || {};
-                if (users[email]) {
-                    alert('ይህ ኢሜይል უკვე ተመዝግቧል! እባክዎ ይግቡ። (Email already exists)');
-                    return;
-                }
-                users[email] = { name: userNameInput.value.trim(), pass: pass };
-                localStorage.setItem('galmee_users', JSON.stringify(users));
-            } else {
-                let users = JSON.parse(localStorage.getItem('galmee_users')) || {};
-                if (!users[email] || users[email].pass !== pass) {
-                    alert('ትክክለኛው ኢሜይል ወይም የሚስጥር ቁጥር አይደለም! (Invalid email or password)');
-                    return;
-                }
-            }
-
-            pendingEmail = email;
-            generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
-            
-            otpNotice.textContent = `ለ ${pendingEmail} የተላከው የማረጋገጫ OTP ቁጥር: [ ${generatedOtp} ]`;
-            stepAuth.style.display = 'none';
-            stepOtp.style.display = 'block';
-        });
-
-        backToAuth.addEventListener('click', () => {
-            stepOtp.style.display = 'none';
-            stepAuth.style.display = 'block';
-            otpInput.value = '';
-        });
-
-        // Verify OTP
-        otpForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const enteredOtp = otpInput.value.trim();
-
-            if (enteredOtp === generatedOtp) {
-                localStorage.setItem('galmee_logged_user', pendingEmail);
-                showApp(pendingEmail);
-            } else {
-                alert('የገባው OTP ትክክል አይደለም! እባክዎ እንደገና ይሞክሩ። (Incorrect OTP)');
-            }
-        });
-
-        // Logout
-        logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('galmee_logged_user');
-            authScreen.classList.add('active');
-            appScreen.classList.remove('active');
-            stepOtp.style.display = 'none';
-            stepAuth.style.display = 'block';
-            authForm.reset();
-            otpInput.value = '';
-        });
-
-        function showApp(email) {
-            authScreen.classList.remove('active');
-            appScreen.classList.add('active');
-            displayUserEmail.textContent = email;
-            renderTransactions();
-        }
-
-        // Main App Logic & Persistence
-        let transactions = JSON.parse(localStorage.getItem('galmee_transactions')) || [];
 
         const txForm = document.getElementById('txForm');
         const descInput = document.getElementById('desc');
@@ -514,37 +584,214 @@
         const netBalanceEl = document.getElementById('netBalance');
         const searchInput = document.getElementById('searchInput');
 
+        let isSignup = false;
+        let generatedOtp = '';
+        let pendingUser = null;
+        let activeUser = null;
+        let transactions = [];
+        let activeTypeFilter = 'all';
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2800);
+        }
+
+        function formatETB(num) {
+            return Number(num).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) + ' ETB';
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function getTxKey(email) {
+            return TX_STORAGE_PREFIX + email.toLowerCase();
+        }
+
+        (function initSession() {
+            const savedEmail = localStorage.getItem(SESSION_KEY);
+            if (savedEmail) {
+                const users = JSON.parse(localStorage.getItem(USERS_KEY)) || {};
+                if (users[savedEmail]) {
+                    launchDashboard({ email: savedEmail, name: users[savedEmail].name });
+                } else {
+                    localStorage.removeItem(SESSION_KEY);
+                }
+            }
+        })();
+
+        toggleAuthMode.addEventListener('click', () => {
+            isSignup = !isSignup;
+            if (isSignup) {
+                authTitle.textContent = 'መመዝገቢያ / Create Account';
+                authSubmitBtn.textContent = 'መዝግብ እና OTP ላክ / Register & Send OTP';
+                nameGroup.style.display = 'flex';
+                userNameInput.required = true;
+                toggleAuthMode.textContent = 'አካውንት አለዎት? ግባ / Login';
+            } else {
+                authTitle.textContent = 'ግባ / Login';
+                authSubmitBtn.textContent = 'ግባ / Login';
+                nameGroup.style.display = 'none';
+                userNameInput.required = false;
+                toggleAuthMode.textContent = 'መለያ የለዎትም? ይመዝገቡ / Sign Up';
+            }
+        });
+
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = userEmailInput.value.trim().toLowerCase();
+            const pass = userPassInput.value.trim();
+            const users = JSON.parse(localStorage.getItem(USERS_KEY)) || {};
+
+            if (isSignup) {
+                const fullName = userNameInput.value.trim();
+                if (!fullName) {
+                    showToast('እባክዎ ሙሉ ስምዎን ያስገቡ / Please enter your full name.');
+                    return;
+                }
+                if (users[email]) {
+                    showToast('ይህ ኢሜይል ቀድሞ ተመዝግቧል / Email already registered.');
+                    return;
+                }
+                users[email] = { name: fullName, pass: pass };
+                localStorage.setItem(USERS_KEY, JSON.stringify(users));
+                pendingUser = { email, name: fullName };
+            } else {
+                if (!users[email] || users[email].pass !== pass) {
+                    showToast('የተሳሳተ ኢሜይል ወይም የሚስጥር ቁጥር / Invalid email or password.');
+                    return;
+                }
+                pendingUser = { email, name: users[email].name };
+            }
+
+            generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+            otpNotice.innerHTML = `ለ <strong>${escapeHtml(pendingUser.email)}</strong> የተላከው የማረጋገጫ ኮድ:<br><span class="otp-code-highlight">${generatedOtp}</span>`;
+
+            stepAuth.style.display = 'none';
+            stepOtp.style.display = 'block';
+            otpInput.value = '';
+            otpInput.focus();
+        });
+
+        backToAuth.addEventListener('click', () => {
+            stepOtp.style.display = 'none';
+            stepAuth.style.display = 'block';
+            otpInput.value = '';
+            pendingUser = null;
+        });
+
+        otpForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const enteredOtp = otpInput.value.trim();
+
+            if (enteredOtp === generatedOtp && pendingUser) {
+                localStorage.setItem(SESSION_KEY, pendingUser.email);
+                launchDashboard(pendingUser);
+                showToast('እንኳን ደህና መጡ! / Welcome back!');
+            } else {
+                showToast('የገባው OTP ትክክል አይደለም / Incorrect OTP code.');
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem(SESSION_KEY);
+            activeUser = null;
+            pendingUser = null;
+            transactions = [];
+            appScreen.classList.remove('active');
+            authScreen.classList.add('active');
+            stepOtp.style.display = 'none';
+            stepAuth.style.display = 'block';
+            authForm.reset();
+            otpInput.value = '';
+            showToast('ወጥተዋል / Logged out');
+        });
+
+        function launchDashboard(user) {
+            activeUser = user;
+            authScreen.classList.remove('active');
+            appScreen.classList.add('active');
+            displayUserName.textContent = user.name || 'Galmee Herregaa';
+            displayUserEmail.textContent = user.email;
+
+            const userTx = localStorage.getItem(getTxKey(user.email));
+            if (userTx) {
+                transactions = JSON.parse(userTx);
+            } else {
+                const legacyTx = localStorage.getItem('galmee_transactions');
+                transactions = legacyTx ? JSON.parse(legacyTx) : [];
+                if (legacyTx) {
+                    localStorage.setItem(getTxKey(user.email), JSON.stringify(transactions));
+                }
+            }
+            renderTransactions();
+        }
+
         function saveAndRender() {
-            localStorage.setItem('galmee_transactions', JSON.stringify(transactions));
+            if (!activeUser) return;
+            localStorage.setItem(getTxKey(activeUser.email), JSON.stringify(transactions));
             renderTransactions();
         }
 
         txForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            const amountVal = parseFloat(amountInput.value);
+            if (isNaN(amountVal) || amountVal <= 0) {
+                showToast('ትክክለኛ መጠን ያስገቡ / Enter a valid amount.');
+                return;
+            }
+
             const newTx = {
                 id: Date.now(),
                 desc: descInput.value.trim(),
-                amount: parseFloat(amountInput.value),
+                amount: amountVal,
                 type: typeInput.value,
-                date: new Date().toLocaleDateString()
+                date: new Date().toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                })
             };
 
             transactions.unshift(newTx);
             saveAndRender();
             txForm.reset();
+            showToast('ተመዝግቧል / Transaction saved');
         });
 
         function deleteTransaction(id) {
             transactions = transactions.filter(tx => tx.id !== id);
             saveAndRender();
+            showToast('ተሰርዟል / Transaction deleted');
         }
 
-        function renderTransactions(filterText = '') {
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                activeTypeFilter = tab.dataset.filter;
+                renderTransactions();
+            });
+        });
+
+        function renderTransactions() {
+            const filterText = searchInput.value.trim().toLowerCase();
             txList.innerHTML = '';
-            
-            const filtered = transactions.filter(tx => 
-                tx.desc.toLowerCase().includes(filterText.toLowerCase())
-            );
+
+            const filtered = transactions.filter(tx => {
+                const matchesType = activeTypeFilter === 'all' || tx.type === activeTypeFilter;
+                const matchesSearch = tx.desc.toLowerCase().includes(filterText);
+                return matchesType && matchesSearch;
+            });
 
             if (filtered.length === 0) {
                 txList.innerHTML = '<li class="empty-state">ምንም መዝገብ የለም / No transactions found.</li>';
@@ -552,7 +799,7 @@
                 filtered.forEach(tx => {
                     const li = document.createElement('li');
                     li.className = 'transaction-item';
-                    
+
                     const isIncome = tx.type === 'income';
                     const sign = isIncome ? '+' : '-';
                     const colorClass = isIncome ? 'income-val' : 'expense-val';
@@ -560,11 +807,11 @@
                     li.innerHTML = `
                         <div class="tx-info">
                             <h4>${escapeHtml(tx.desc)}</h4>
-                            <span>${tx.date}</span>
+                            <span>${escapeHtml(tx.date)}</span>
                         </div>
                         <div class="tx-right">
-                            <span class="tx-amount ${colorClass}">${sign}${tx.amount.toFixed(2)} ETB</span>
-                            <button class="delete-btn" onclick="deleteTransaction(${tx.id})">&times;</button>
+                            <span class="tx-amount ${colorClass}">${sign}${formatETB(tx.amount)}</span>
+                            <button type="button" class="delete-btn" aria-label="Delete" onclick="deleteTransaction(${tx.id})">&times;</button>
                         </div>
                     `;
                     txList.appendChild(li);
@@ -585,24 +832,17 @@
 
             const balance = income - expense;
 
-            totalIncomeEl.textContent = income.toFixed(2) + ' ETB';
-            totalExpenseEl.textContent = expense.toFixed(2) + ' ETB';
-            netBalanceEl.textContent = balance.toFixed(2) + ' ETB';
+            totalIncomeEl.textContent = formatETB(income);
+            totalExpenseEl.textContent = formatETB(expense);
+            netBalanceEl.textContent = formatETB(balance);
         }
 
-        searchInput.addEventListener('input', (e) => {
-            renderTransactions(e.target.value);
-        });
-
-        function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
+        searchInput.addEventListener('input', renderTransactions);
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker registered!', reg))
-                    .catch(err => console.log('Service Worker registration failed:', err));
+                navigator.serviceWorker.register('./sw.js')
+                    .catch(err => console.error('Service Worker registration failed:', err));
             });
         }
     </script>
