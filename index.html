@@ -441,7 +441,6 @@
             const pass = userPassInput.value.trim();
 
             if (isSignup) {
-                // Save user registration details to localStorage database
                 let users = JSON.parse(localStorage.getItem('galmee_users')) || {};
                 if (users[email]) {
                     alert('ይህ ኢሜይል უკვე ተመዝግቧል! እባክዎ ይግቡ። (Email already exists)');
@@ -450,7 +449,6 @@
                 users[email] = { name: userNameInput.value.trim(), pass: pass };
                 localStorage.setItem('galmee_users', JSON.stringify(users));
             } else {
-                // Verify login credentials
                 let users = JSON.parse(localStorage.getItem('galmee_users')) || {};
                 if (!users[email] || users[email].pass !== pass) {
                     alert('ትክክለኛው ኢሜይል ወይም የሚስጥር ቁጥር አይደለም! (Invalid email or password)');
@@ -459,7 +457,6 @@
             }
 
             pendingEmail = email;
-            // Generate random 4-digit OTP
             generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
             
             otpNotice.textContent = `ለ ${pendingEmail} የተላከው የማረጋገጫ OTP ቁጥር: [ ${generatedOtp} ]`;
@@ -601,7 +598,6 @@
             return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
-        // Register Service Worker for PWA / APK support
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
