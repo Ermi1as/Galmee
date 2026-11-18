@@ -1,10 +1,11 @@
-const CACHE_NAME = 'galmee-herregaa-v6';
+const CACHE_NAME = 'galmee-herregaa-v7';
 const ASSETS = [
   './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  './screenshot-mobile.png'
+  './screenshot-mobile.png',
+  './screenshot-wide.png'
 ];
 
 self.addEventListener('install', (e) => {
